@@ -13,7 +13,7 @@ public static class Noise
     /// <param name="overlapSeed">offset random seed로 동일한 맵이 나올 수 있게 만든다. = Perlin Noise에 넣을 좌표값을 동일하게 만든다.</param>
     /// <param name="settings">중첩될 각 PerlinNoise의 설정 = 중첩될 각 NoiseMap의 설정</param>
     /// <returns></returns>
-    public static float[,] GenerateNoiseMap(int mapWidth, int mapHeight, float scale, Vector2 offset, int overlapSeed, NoiseMapSetting[] settings, Texture2D desireShape)
+    public static float[,] GenerateNoiseMap(int mapWidth, int mapHeight, float scale, Vector2 offset, int overlapSeed, NoiseMapSetting[] settings, Texture2D desireShape = null)
     {
         // 리턴할 노이즈맵이다.
         float[,] noiseMap = new float[mapWidth, mapHeight];
@@ -32,9 +32,16 @@ public static class Noise
         if (scale <= 0)
             scale = 0.00001f;
 
-        Color[] desireHeightMap = desireShape.GetPixels(0);
-        int desireWidth = desireShape.width;
-        int desireHeight = desireShape.height;
+        Color[] desireHeightMap = new Color[] { };
+        int desireWidth = 1;
+        int desireHeight = 1;
+
+        if (desireShape != null)
+        {
+            desireHeightMap = desireShape.GetPixels(0);
+            desireWidth = desireShape.width;
+            desireHeight = desireShape.height;
+        }
 
         float maxNoiseHeight = float.MinValue;
         float minNoiseHeight = float.MaxValue;
@@ -62,12 +69,15 @@ public static class Noise
                     noiseHeight += perlinValue * settings[i].valueRatio;
                 }
 
+                if (desireShape != null)
+                    noiseMap[x, y] = desireHeightMap[desireWidth * y * desireHeight / mapHeight + x * desireWidth / mapWidth].a * noiseHeight;
+                else
+                    noiseMap[x, y] = noiseHeight;
+
                 if (noiseHeight > maxNoiseHeight)
                     maxNoiseHeight = noiseHeight;
                 else if (noiseHeight < minNoiseHeight)
                     minNoiseHeight = noiseHeight;
-
-                noiseMap[x, y] = desireHeightMap[desireWidth * y * desireHeight / mapHeight + x * desireWidth / mapWidth].grayscale * noiseHeight;
             }
         }
 

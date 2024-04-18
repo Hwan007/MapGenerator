@@ -6,7 +6,7 @@ public static class MeshGenerator
 {
     public static MeshData GenerateTerrainMesh(float[,] heightMap, float heightMultiplier, AnimationCurve heightCurveMultiplier, Texture2D desireShape)
     {
-        Color[] desireHeight = desireShape.GetPixels(0);
+        Color[] desireHeightMap = desireShape.GetPixels(0);
         int desireWidth = desireShape.width;
         int desireHeight = desireShape.height;
 
@@ -23,7 +23,7 @@ public static class MeshGenerator
         {
             for (int x = 0; x < width; x++)
             {
-                meshData.vertices[vertexIndex] = new Vector3(topLeftX + x, desireHeight[desireWidth * y * desireHeight / height + x * desireWidth / width].grayscale * heightMultiplier * heightCurve.Evaluate(heightMap[x, y]), topLeftZ - y);
+                meshData.vertices[vertexIndex] = new Vector3(topLeftX + x, desireHeightMap[desireWidth * y * desireHeight / height + x * desireWidth / width].grayscale * heightMultiplier * heightCurveMultiplier.Evaluate(heightMap[x, y]), topLeftZ - y);
                 meshData.uvs[vertexIndex] = new Vector2(x / (float)width, y / (float)height);
 
                 if (x < width - 1 && y < height - 1)

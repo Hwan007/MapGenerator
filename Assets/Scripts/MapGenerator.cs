@@ -23,6 +23,9 @@ public class MapGenerator : MonoBehaviour
     public NoiseMapSetting[] settings;
     public int seed;
 
+    public float heightMultiplier;
+    public AnimationCurve heightMultiplierCurve;
+    public Texture2D desireShape;
     public bool autoUpdate;
 
     public TerrainType[] regions;
@@ -59,7 +62,7 @@ public class MapGenerator : MonoBehaviour
         }
         else if (drawMode == eDrawMode.MeshMap)
         {
-            display.DrawMesh(MeshGenerator.GenerateTerrainMesh(noiseMap), TextureGenerator.TextureFromColorMap(colorMap, mapWidth, mapHeight));
+            display.DrawMesh(MeshGenerator.GenerateTerrainMesh(noiseMap, heightMultiplier, heightMultiplierCurve, desireShape), TextureGenerator.TextureFromColorMap(colorMap, mapWidth, mapHeight));
         }
     }
 

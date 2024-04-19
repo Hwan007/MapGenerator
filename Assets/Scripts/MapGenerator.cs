@@ -25,14 +25,23 @@ public class MapGenerator : MonoBehaviour
 
     public float heightMultiplier;
     public AnimationCurve heightMultiplierCurve;
+    
+    public bool useShape;
     public Texture2D desireShape;
+
+    public bool useCircle;
+    public float gradient;
+    public float gradientRate;
+
     public bool autoUpdate;
 
     public TerrainType[] regions;
 
     public void GenerateMap()
     {
-        float[,] noiseMap = Noise.GenerateNoiseMap(mapWidth, mapHeight, noiseScale, offset, seed, settings, desireShape);
+        float[,] noiseMap = Noise.GenerateNoiseMap(mapWidth, mapHeight, noiseScale, offset, seed, settings);
+        if (useCircle) noiseMap = Noise.EditHeightMapWithCircle(noiseMap, gradient, gradientRate);
+        if (useShape) noiseMap = Noise.EditHeightMapWithTexture2D(noiseMap, desireShape);
 
         Color[] colorMap = new Color[mapWidth * mapHeight];
         for (int y = 0; y < mapHeight; y++)

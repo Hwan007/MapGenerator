@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -13,7 +14,7 @@ public static class Noise
     /// <param name="overlapSeed">offset random seed로 동일한 맵이 나올 수 있게 만든다. = Perlin Noise에 넣을 좌표값을 동일하게 만든다.</param>
     /// <param name="settings">중첩될 각 PerlinNoise의 설정 = 중첩될 각 NoiseMap의 설정</param>
     /// <returns></returns>
-    public static float[,] GenerateNoiseMap(int mapWidth, int mapHeight, float scale, Vector2 offset, int overlapSeed, NoiseMapSetting[] settings, Texture2D desireShape = null)
+    public static float[,] GenerateNoiseMap(int mapWidth, int mapHeight, float scale, Vector2 offset, int overlapSeed, NoiseMapSetting[] settings)
     {
         // 리턴할 노이즈맵이다.
         float[,] noiseMap = new float[mapWidth, mapHeight];
@@ -32,17 +33,6 @@ public static class Noise
         if (scale <= 0)
             scale = 0.00001f;
 
-        Color[] desireHeightMap = new Color[] { };
-        int desireWidth = 1;
-        int desireHeight = 1;
-
-        if (desireShape != null)
-        {
-            desireHeightMap = desireShape.GetPixels(0);
-            desireWidth = desireShape.width;
-            desireHeight = desireShape.height;
-        }
-
         float maxNoiseHeight = float.MinValue;
         float minNoiseHeight = float.MaxValue;
 
@@ -60,8 +50,8 @@ public static class Noise
                     // Perlin Noise에 대입하기 위한 좌표로 최종적인 NoiseMap의 형상을 결정한다.
                     // scale은 Noise Map의 비율을 결정하며, scaleRatio로 각 중첩될 값들의 Noise Map 비율을 결정한다.
                     // overlapOffset은 동일한 좌표를 Perlin Noise에 넣지 않도록 만들어, 최종적인 Noise Map이 좀 더 불규칙하게 만들어준다.
-                    float sampleX = (x-halfWidth) / scale * settings[i].scaleRatio + overlapOffset[i].x;
-                    float sampleY = (y-halfHeight) / scale * settings[i].scaleRatio + overlapOffset[i].y;
+                    float sampleX = (x - halfWidth) / scale * settings[i].scaleRatio + overlapOffset[i].x;
+                    float sampleY = (y - halfHeight) / scale * settings[i].scaleRatio + overlapOffset[i].y;
 
                     // -1 ~ 1 까지의 PerlinNoise를 만들기 위하여 "* 2 - 1"을 하였다.
                     float perlinValue = Mathf.PerlinNoise(sampleX, sampleY) * 2 - 1;
@@ -69,10 +59,7 @@ public static class Noise
                     noiseHeight += perlinValue * settings[i].valueRatio;
                 }
 
-                if (desireShape != null)
-                    noiseMap[x, y] = desireHeightMap[desireWidth * y * desireHeight / mapHeight + x * desireWidth / mapWidth].a * noiseHeight;
-                else
-                    noiseMap[x, y] = noiseHeight;
+                noiseMap[x, y] = noiseHeight;
 
                 if (noiseHeight > maxNoiseHeight)
                     maxNoiseHeight = noiseHeight;
@@ -86,11 +73,103 @@ public static class Noise
         {
             for (int x = 0; x < mapWidth; x++)
             {
-                noiseMap[x,y] = Mathf.InverseLerp(minNoiseHeight, maxNoiseHeight, noiseMap[x,y]);
+                noiseMap[x, y] = Mathf.InverseLerp(minNoiseHeight, maxNoiseHeight, noiseMap[x, y]);
             }
         }
 
         return noiseMap;
+    }
+
+    public static float[,] EditHeightMapWithTexture2D(float[,] originHeightMap, Texture2D desireShape)
+    {
+
+        Color[] desireHeightMap = new Color[] { };
+        int desireWidth = 1;
+        int desireHeight = 1;
+
+        if (desireShape != null)
+        {
+            desireHeightMap = desireShape.GetPixels(0);
+            desireWidth = desireShape.width;
+            desireHeight = desireShape.height;
+        }
+
+        float maxNoiseHeight = float.MinValue;
+        float minNoiseHeight = float.MaxValue;
+
+        int mapWidth = originHeightMap.GetLength(0);
+        int mapHeight = originHeightMap.GetLength(1);
+
+        float[,] newHeightMap = new float[mapWidth,mapHeight];
+
+        for (int y = 0; y < mapHeight; y++)
+        {
+            for (int x = 0; x < mapWidth; x++)
+            {
+                float height = desireHeightMap[desireWidth * y * desireHeight / mapHeight + x * desireWidth / mapWidth].a * originHeightMap[x, y];
+                newHeightMap[x, y] = height;
+
+                if (height > maxNoiseHeight)
+                    maxNoiseHeight = height;
+                else if (height < minNoiseHeight)
+                    minNoiseHeight = height;
+            }
+        }
+
+        for (int y = 0; y < mapHeight; y++)
+        {
+            for (int x = 0; x < mapWidth; x++)
+            {
+                newHeightMap[x, y] = Mathf.InverseLerp(minNoiseHeight, maxNoiseHeight, newHeightMap[x, y]);
+            }
+        }
+
+        return newHeightMap;
+    }
+
+    public static float[,] EditHeightMapWithCircle(float[,] originHeightMap, float gradientSize, float circularGradientRate)
+    {
+        int mapWidth = originHeightMap.GetLength(1);
+        int mapHeight = originHeightMap.GetLength(0);
+
+        float halfWidth = mapWidth / 2f;
+        float halfHeight = mapHeight / 2f;
+
+        float halfGradientSize = gradientSize * Mathf.Sqrt(halfWidth * halfWidth + halfHeight * halfHeight) / 2f;
+
+        float[,] newHeightMap = new float[mapWidth, mapHeight];
+
+        float maxNoiseHeight = float.MinValue;
+        float minNoiseHeight = float.MaxValue;
+
+        for (int y = 0; y < mapHeight;y++)
+        {
+            for (int x = 0; x < mapWidth; x++)
+            {
+                // edit by settings
+                float distance = Vector2.Distance(new Vector2(x, y), new Vector2(halfWidth, halfHeight));
+                float gradient = Mathf.Clamp01(1 - distance / halfGradientSize) * circularGradientRate;
+
+                float height = originHeightMap[x, y] + gradient;
+
+                newHeightMap[x,y] = height;
+
+                if (height > maxNoiseHeight)
+                    maxNoiseHeight = height;
+                else if (height < minNoiseHeight)
+                    minNoiseHeight = height;
+            }
+        }
+
+        for (int y = 0; y < mapHeight; y++)
+        {
+            for (int x = 0; x < mapWidth; x++)
+            {
+                newHeightMap[x, y] = Mathf.InverseLerp(minNoiseHeight, maxNoiseHeight, newHeightMap[x, y]);
+            }
+        }
+
+        return newHeightMap;
     }
 }
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-using namespace MapGenerator
+namespace MapGenerator
 {
     public enum eDrawMode
     {
@@ -26,14 +26,23 @@ using namespace MapGenerator
 
         public float heightMultiplier;
         public AnimationCurve heightMultiplierCurve;
+
+        public bool useShape;
         public Texture2D desireShape;
+
+        public bool useCircle;
+        public float gradient;
+        public float gradientRate;
+
         public bool autoUpdate;
 
         public TerrainType[] regions;
 
         public void GenerateMap()
         {
-            float[,] noiseMap = Noise.GenerateNoiseMap(mapWidth, mapHeight, noiseScale, offset, seed, settings, desireShape);
+            float[,] noiseMap = Noise.GenerateNoiseMap(mapWidth, mapHeight, noiseScale, offset, seed, settings);
+            if (useCircle) noiseMap = Noise.EditHeightMapWithCircle(noiseMap, gradient, gradientRate);
+            if (useShape) noiseMap = Noise.EditHeightMapWithTexture2D(noiseMap, desireShape);
 
             Color[] colorMap = new Color[mapWidth * mapHeight];
             for (int y = 0; y < mapHeight; y++)
@@ -41,7 +50,7 @@ using namespace MapGenerator
                 for (int x = 0; x < mapWidth; x++)
                 {
                     float currentHeight = noiseMap[x, y];
-                    for (int i = 0; i < regions.Length;  i++)
+                    for (int i = 0; i < regions.Length; i++)
                     {
                         if (currentHeight <= regions[i].height)
                         {

@@ -2,26 +2,27 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-using static UnityEditor.PlayerSettings.SplashScreen;
 
-public enum eDrawMode
+using namespace MapGenerator
 {
-    NoiseMap,
-    ColorMap,
-    MeshMap,
-}
+    public enum eDrawMode
+    {
+        NoiseMap,
+        ColorMap,
+        MeshMap,
+    }
 
-public class MapGenerator : MonoBehaviour
-{
-    public eDrawMode drawMode;
+    public class MapGenerator : MonoBehaviour
+    {
+        public eDrawMode drawMode;
 
-    public int mapWidth;
-    public int mapHeight;
-    public float noiseScale;
-    public Vector2 offset;
+        public int mapWidth;
+        public int mapHeight;
+        public float noiseScale;
+        public Vector2 offset;
 
-    public NoiseMapSetting[] settings;
-    public int seed;
+        public NoiseMapSetting[] settings;
+        public int seed;
 
     public float heightMultiplier;
     public AnimationCurve heightMultiplierCurve;
@@ -35,7 +36,7 @@ public class MapGenerator : MonoBehaviour
 
     public bool autoUpdate;
 
-    public TerrainType[] regions;
+        public TerrainType[] regions;
 
     public void GenerateMap()
     {
@@ -82,33 +83,34 @@ public class MapGenerator : MonoBehaviour
     }
 }
 
-[System.Serializable]
-public struct TerrainType
-{
-    public string name;
-    public float height;
-    public Color color;
-}
-
-[CustomEditor(typeof(MapGenerator))]
-public class MapGeneratorEditor : Editor
-{
-
-    public override void OnInspectorGUI()
+    [System.Serializable]
+    public struct TerrainType
     {
-        MapGenerator mapGen = (MapGenerator)target;
+        public string name;
+        public float height;
+        public Color color;
+    }
 
-        if (DrawDefaultInspector())
+    [CustomEditor(typeof(MapGenerator))]
+    public class MapGeneratorEditor : Editor
+    {
+
+        public override void OnInspectorGUI()
         {
-            if (mapGen.autoUpdate)
+            MapGenerator mapGen = (MapGenerator)target;
+
+            if (DrawDefaultInspector())
+            {
+                if (mapGen.autoUpdate)
+                {
+                    mapGen.GenerateMap();
+                }
+            }
+
+            if (GUILayout.Button("Generate"))
             {
                 mapGen.GenerateMap();
             }
-        }
-
-        if (GUILayout.Button("Generate"))
-        {
-            mapGen.GenerateMap();
         }
     }
 }

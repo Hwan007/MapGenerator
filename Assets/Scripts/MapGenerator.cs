@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-using namespace MapGenerator
+namespace MapGenerator
 {
     public enum eDrawMode
     {
@@ -24,64 +24,64 @@ using namespace MapGenerator
         public NoiseMapSetting[] settings;
         public int seed;
 
-    public float heightMultiplier;
-    public AnimationCurve heightMultiplierCurve;
-    
-    public bool useShape;
-    public Texture2D desireShape;
+        public float heightMultiplier;
+        public AnimationCurve heightMultiplierCurve;
 
-    public bool useCircle;
-    public float gradient;
-    public float gradientRate;
+        public bool useShape;
+        public Texture2D desireShape;
 
-    public bool autoUpdate;
+        public bool useCircle;
+        public float gradient;
+        public float gradientRate;
+
+        public bool autoUpdate;
 
         public TerrainType[] regions;
 
-    public void GenerateMap()
-    {
-        float[,] noiseMap = Noise.GenerateNoiseMap(mapWidth, mapHeight, noiseScale, offset, seed, settings);
-        if (useCircle) noiseMap = Noise.EditHeightMapWithCircle(noiseMap, gradient, gradientRate);
-        if (useShape) noiseMap = Noise.EditHeightMapWithTexture2D(noiseMap, desireShape);
-
-        Color[] colorMap = new Color[mapWidth * mapHeight];
-        for (int y = 0; y < mapHeight; y++)
+        public void GenerateMap()
         {
-            for (int x = 0; x < mapWidth; x++)
+            float[,] noiseMap = Noise.GenerateNoiseMap(mapWidth, mapHeight, noiseScale, offset, seed, settings);
+            if (useCircle) noiseMap = Noise.EditHeightMapWithCircle(noiseMap, gradient, gradientRate);
+            if (useShape) noiseMap = Noise.EditHeightMapWithTexture2D(noiseMap, desireShape);
+
+            Color[] colorMap = new Color[mapWidth * mapHeight];
+            for (int y = 0; y < mapHeight; y++)
             {
-                float currentHeight = noiseMap[x, y];
-                for (int i = 0; i < regions.Length;  i++)
+                for (int x = 0; x < mapWidth; x++)
                 {
-                    if (currentHeight <= regions[i].height)
+                    float currentHeight = noiseMap[x, y];
+                    for (int i = 0; i < regions.Length; i++)
                     {
-                        colorMap[y * mapWidth + x] = regions[i].color;
-                        break;
+                        if (currentHeight <= regions[i].height)
+                        {
+                            colorMap[y * mapWidth + x] = regions[i].color;
+                            break;
+                        }
                     }
                 }
             }
+
+            MapDisplay display = FindObjectOfType<MapDisplay>();
+            if (drawMode == eDrawMode.NoiseMap)
+            {
+                display.DrawTexture(TextureGenerator.TextureFromHeightMap(noiseMap));
+            }
+            else if (drawMode == eDrawMode.ColorMap)
+            {
+                display.DrawTexture(TextureGenerator.TextureFromColorMap(colorMap, mapWidth, mapHeight));
+            }
+            else if (drawMode == eDrawMode.MeshMap)
+            {
+                display.DrawMesh(MeshGenerator.GenerateTerrainMesh(noiseMap, heightMultiplier, heightMultiplierCurve), TextureGenerator.TextureFromColorMap(colorMap, mapWidth, mapHeight));
+            }
         }
 
-        MapDisplay display = FindObjectOfType<MapDisplay>();
-        if (drawMode == eDrawMode.NoiseMap)
+        private void OnValidate()
         {
-            display.DrawTexture(TextureGenerator.TextureFromHeightMap(noiseMap));
-        }
-        else if (drawMode == eDrawMode.ColorMap)
-        {
-            display.DrawTexture(TextureGenerator.TextureFromColorMap(colorMap, mapWidth, mapHeight));
-        }
-        else if (drawMode == eDrawMode.MeshMap)
-        {
-            display.DrawMesh(MeshGenerator.GenerateTerrainMesh(noiseMap, heightMultiplier, heightMultiplierCurve), TextureGenerator.TextureFromColorMap(colorMap, mapWidth, mapHeight));
+            if (mapWidth < 1) mapWidth = 1;
+            if (mapHeight < 1) mapHeight = 1;
         }
     }
-
-    private void OnValidate()
-    {
-        if (mapWidth < 1) mapWidth = 1;
-        if (mapHeight < 1) mapHeight = 1;
-    }
-}
 
     [System.Serializable]
     public struct TerrainType

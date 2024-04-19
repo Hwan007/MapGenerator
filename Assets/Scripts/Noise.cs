@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
-using namespace MapGenerator
+namespace MapGenerator
 {
     public static class Noise
     {

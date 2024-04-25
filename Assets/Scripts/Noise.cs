@@ -103,11 +103,14 @@ namespace MapGenerator
 
             float[,] newHeightMap = new float[mapWidth, mapHeight];
 
+            float coefHeight = (float) desireWidth * desireHeight / mapHeight;
+            float coefWidth = (float) desireWidth / mapWidth;
+
             for (int y = 0; y < mapHeight; y++)
             {
                 for (int x = 0; x < mapWidth; x++)
                 {
-                    float height = desireHeightMap[desireWidth * y * desireHeight / mapHeight + x * desireWidth / mapWidth].a * originHeightMap[x, y];
+                    float height = desireHeightMap[(int)(y * coefHeight) + (int)(x * coefWidth)].a * originHeightMap[x, y];
                     newHeightMap[x, y] = height;
 
                     if (height > maxNoiseHeight)

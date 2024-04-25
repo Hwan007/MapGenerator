@@ -15,7 +15,7 @@ namespace MapGenerator
         /// <param name="overlapSeed">offset random seed로 동일한 맵이 나올 수 있게 만든다. = Perlin Noise에 넣을 좌표값을 동일하게 만든다.</param>
         /// <param name="settings">중첩될 각 PerlinNoise의 설정 = 중첩될 각 NoiseMap의 설정</param>
         /// <returns></returns>
-        public static float[,] GenerateNoiseMap(int mapWidth, int mapHeight, float scale, Vector2 offset, int overlapSeed, NoiseMapSetting[] settings)
+        public static float[,] GenerateNoiseMap(int mapWidth, int mapHeight, float scale, Vector2 offset, int overlapSeed, NoiseMapSetting[] settings, float heightMultiplier, AnimationCurve heightCurveMultiplier)
         {
             // 리턴할 노이즈맵이다.
             float[,] noiseMap = new float[mapWidth, mapHeight];
@@ -60,7 +60,7 @@ namespace MapGenerator
                         noiseHeight += perlinValue * settings[i].valueRatio;
                     }
 
-                    noiseMap[x, y] = noiseHeight;
+                    noiseMap[x, y] = heightMultiplier * heightCurveMultiplier.Evaluate(noiseHeight);
 
                     if (noiseHeight > maxNoiseHeight)
                         maxNoiseHeight = noiseHeight;

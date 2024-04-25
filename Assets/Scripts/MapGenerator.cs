@@ -19,6 +19,7 @@ namespace MapGenerator
         const int mapChunkSize = 241;
         [Range(0,6)]
         public int levelOfDetail = 1;
+        public float baseXZLength = 1f;
         public float noiseScale;
         public Vector2 offset;
 
@@ -73,7 +74,7 @@ namespace MapGenerator
             }
             else if (drawMode == eDrawMode.MeshMap)
             {
-                display.DrawMesh(MeshGenerator.GenerateTerrainMesh(noiseMap, heightMultiplier, heightMultiplierCurve, levelOfDetail), TextureGenerator.TextureFromColorMap(colorMap, mapChunkSize, mapChunkSize));
+                display.DrawMesh(MeshGenerator.GenerateTerrainMesh(noiseMap, heightMultiplier, heightMultiplierCurve, levelOfDetail, baseXZLength), TextureGenerator.TextureFromColorMap(colorMap, mapChunkSize, mapChunkSize));
             }
         }
     }

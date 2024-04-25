@@ -74,7 +74,7 @@ namespace MapGenerator
             }
             else if (drawMode == eDrawMode.MeshMap)
             {
-                display.DrawMesh(MeshGenerator.GenerateTerrainMesh(noiseMap, heightMultiplier, heightMultiplierCurve, levelOfDetail, baseXZLength), TextureGenerator.TextureFromColorMap(colorMap, mapChunkSize, mapChunkSize));
+                display.DrawMesh(MeshGenerator.GenerateMesh(noiseMap, heightMultiplier, heightMultiplierCurve, levelOfDetail, baseXZLength), TextureGenerator.TextureFromColorMap(colorMap, mapChunkSize, mapChunkSize));
             }
         }
     }

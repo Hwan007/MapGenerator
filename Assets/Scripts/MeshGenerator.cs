@@ -6,7 +6,7 @@ namespace MapGenerator
 {    
     public static class MeshGenerator
     {
-        public static MeshData GenerateTerrainMesh(float[,] heightMap, float heightMultiplier, AnimationCurve heightCurveMultiplier, int levelOfDetail, float xzBaseLength = 1f)
+        public static MeshData GenerateMesh(float[,] heightMap, float heightMultiplier, AnimationCurve heightCurveMultiplier, int levelOfDetail, float xzBaseLength = 1f)
         {
             int widthVertex = heightMap.GetLength(0);
             int heightVertex = heightMap.GetLength(1);

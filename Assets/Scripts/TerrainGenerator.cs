@@ -1,15 +1,18 @@
-using MapGenerator;
 using System;
 using UnityEngine;
 
-public static class TerrainGenerator
+namespace MapGenerator
 {
-    public static MeshData[] GenerateTerrain(int size)
+    public static class TerrainGenerator
     {
-        int sizeSquare = size * size;
-        MeshData[] meshDatas = new MeshData[sizeSquare];
+        public static MeshData[] GenerateTerrain(int sizeXsize)
+        {
+            int sizeSquare = sizeXsize * sizeXsize;
+            MeshData[] meshDatas = new MeshData[sizeSquare];
 
 
-        return meshDatas;
+
+            return meshDatas;
+        }
     }
 }

@@ -7,41 +7,6 @@ namespace MapGenerator
 {
     public static class MeshGenerator
     {
-        public static MeshData[] GenerateMultipleMesh(int sizeXsize, float[,] heightMap, int levelOfDetail, float xzBaseLength = 1f)
-        {
-            int sizeSquare = sizeXsize * sizeXsize;
-            MeshData[] meshDatas = new MeshData[sizeSquare];
-
-            int xSizeUnit = (heightMap.GetLength(0) - 1) / sizeXsize + 1;
-            int ySizeUnit = (heightMap.GetLength(1) - 1) / sizeXsize + 1;
-
-            while (xSizeUnit > 241 && ySizeUnit > 241)
-            {
-                ++sizeXsize;
-                sizeSquare = sizeXsize * sizeXsize;
-
-                xSizeUnit = (heightMap.GetLength(0) - 1) / sizeXsize + 1;
-                ySizeUnit = (heightMap.GetLength(1) - 1) / sizeXsize + 1;
-            }
-
-            for (int i = 0; i < sizeSquare; ++i)
-            {
-                float[,] targetHeightMap = new float[xSizeUnit, ySizeUnit];
-                for (int x = 0; x < xSizeUnit; ++x)
-                {
-                    int originX = xSizeUnit * (i % sizeXsize) + x;
-                    for (int y = 0; y < ySizeUnit; ++y)
-                    {
-                        int originY = ySizeUnit * (i / sizeXsize) + y;
-                        targetHeightMap[x, y] = heightMap[originX, originY];
-                    }
-                }
-                // meshDatas[i] = GenerateMesh();
-            }
-
-            return meshDatas;
-        }
-
         public static MeshData GenerateMesh(float[,] heightMap, int levelOfDetail, float xzBaseLength = 1f)
         {
             int widthVertex = heightMap.GetLength(0);

@@ -10,6 +10,7 @@ namespace MapGenerator
         NoiseMap,
         ColorMap,
         MeshMap,
+        TerrainMap,
     }
 
     public class MapGenerator : MonoBehaviour
@@ -42,7 +43,7 @@ namespace MapGenerator
 
         public void GenerateMap()
         {
-            float[,] noiseMap = Noise.GenerateNoiseMap(mapChunkSize, mapChunkSize, noiseScale, offset, seed, settings);
+            float[,] noiseMap = Noise.GenerateNoiseMap(mapChunkSize, mapChunkSize, noiseScale, offset, seed, settings, heightMultiplier, heightMultiplierCurve);
             if (useCircle) noiseMap = Noise.EditHeightMapWithCircle(noiseMap, gradient, gradientRate);
             if (useShape) noiseMap = Noise.EditHeightMapWithTexture2D(noiseMap, desireShape);
 
@@ -74,7 +75,11 @@ namespace MapGenerator
             }
             else if (drawMode == eDrawMode.MeshMap)
             {
-                display.DrawMesh(MeshGenerator.GenerateMesh(noiseMap, heightMultiplier, heightMultiplierCurve, levelOfDetail, baseXZLength), TextureGenerator.TextureFromColorMap(colorMap, mapChunkSize, mapChunkSize));
+                display.DrawMesh(MeshGenerator.GenerateMesh(noiseMap, levelOfDetail, baseXZLength), TextureGenerator.TextureFromColorMap(colorMap, mapChunkSize, mapChunkSize));
+            }
+            else if (drawMode == eDrawMode.TerrainMap)
+            {
+
             }
         }
     }

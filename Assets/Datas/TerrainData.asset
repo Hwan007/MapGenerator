@@ -13,3 +13,9 @@ MonoBehaviour:
   m_Name: TerrainData
   m_EditorClassIdentifier: 
   autoUpdate: 0
+  levelOfDetail: 1
+  baseXZLength: 1
+  heightMultiplier: 0
+  terrainSettings:
+  - terrainCode: 0
+    texture: {fileID: 0}

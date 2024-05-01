@@ -36,7 +36,7 @@ namespace MapGenerator
         public Material terrainMaterial;
 
 
-        [Header("Ȯ�ο�")]
+        [Header("확인용")]
         public List<MeshObject> meshObjs;
 
         public void DrawMapInEditor()

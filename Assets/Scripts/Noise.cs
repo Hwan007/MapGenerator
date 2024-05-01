@@ -167,15 +167,5 @@ namespace MapGenerator {
         }
     }
 
-    [System.Serializable]
-    public struct NoiseMapSetting {
-        /// <summary>
-        /// 뽑아낸 PerlinNoise 값을 어느 정도 반영할 것인지 결정한다.
-        /// </summary>
-        public float valueRatio;
-        /// <summary>
-        /// PerlinNoise를 대입하는 좌표값(x,y)의 기울기(변화율)이다.
-        /// </summary>
-        public float scaleRatio;
-    }
+
 }

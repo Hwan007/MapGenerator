@@ -10,6 +10,17 @@ namespace MapGenerator {
         MeshMap,
         TerrainMap,
     }
+    public enum eTerrainType {
+        Ocean,
+        Beach,
+        Grass,
+        Forest,
+        Dirt,
+        Rocky,
+        Lava,
+        Snow,
+        Frozen,
+    }
 
     public class MapGenerator : MonoBehaviour {
         public eDrawMode drawMode;
@@ -18,92 +29,74 @@ namespace MapGenerator {
         [Range(0, 6)]
         public int levelOfDetail = 1;
         public float baseXZLength = 1f;
-        public float noiseScale;
-        public Vector2 offset;
-        public Noise.eNormalizeMode normalizeMode;
-        public NoiseMapSetting[] settings;
-        public int seed;
 
-        public float heightMultiplier;
-        public AnimationCurve heightMultiplierCurve;
-
-        public bool useShape;
-        public Texture2D desireShape;
-
-        public bool useCircle;
-        public float gradient;
-        public float gradientRate;
+        public NoiseData noiseData;
 
         public bool autoUpdate;
-
-        public TerrainType[] regions;
+        public float heightMultiplier;
+        public TerrainData regions;
 
         [Header("È®ÀÎ¿ë")]
         public List<MeshObject> meshObjs;
 
         public void DrawMapInEditor() {
-            MapData map = GenerateMapData();
+            MapData map = GenerateMapData(noiseData, regions);
 
             MapDisplay display = FindObjectOfType<MapDisplay>();
-            if (drawMode == eDrawMode.NoiseMap) {
-                display.DrawTexture(TextureGenerator.TextureFromHeightMap(map.heightMap));
-            }
-            else if (drawMode == eDrawMode.ColorMap) {
-                display.DrawTexture(TextureGenerator.TextureFromColorMap(map.colorMap, mapChunkSize, mapChunkSize));
-            }
-            else if (drawMode == eDrawMode.MeshMap) {
-                display.DrawMesh(MeshGenerator.GenerateMesh(map.heightMap, levelOfDetail, heightMultiplier, baseXZLength), TextureGenerator.TextureFromColorMap(map.colorMap, mapChunkSize, mapChunkSize));
+            switch (drawMode) {
+                case eDrawMode.NoiseMap:
+                    display.DrawTexture(TextureGenerator.TextureFromHeightMap(map.heightMap));
+                    break;
+                case eDrawMode.ColorMap:
+                    display.DrawTexture(TextureGenerator.TextureFromColorMap(map.colorMap, mapChunkSize, mapChunkSize));
+                    break;
+                case eDrawMode.MeshMap:
+                    display.DrawMesh(MeshGenerator.GenerateMesh(map.heightMap, levelOfDetail, heightMultiplier, baseXZLength), TextureGenerator.TextureFromColorMap(map.colorMap, mapChunkSize, mapChunkSize));
+                    break;
             }
         }
 
-        MapData GenerateMapData() {
-            float[,] noiseMap = Noise.GenerateNoiseMap(mapChunkSize, mapChunkSize, noiseScale, offset, seed, settings, normalizeMode, heightMultiplierCurve);
-            if (useCircle)
-                noiseMap = Noise.EditHeightMapWithCircle(noiseMap, gradient, gradientRate);
-            if (useShape)
-                noiseMap = Noise.EditHeightMapWithTexture2D(noiseMap, desireShape);
+        MapData GenerateMapData(NoiseData noiseData, TerrainData terrainData) {
+            float[,] noiseMap = Noise.GenerateNoiseMap(mapChunkSize, mapChunkSize, noiseData.noiseScale, noiseData.offset, noiseData.seed, noiseData.settings, noiseData.normalizeMode, noiseData.heightMultiplierCurve);
+            if (noiseData.useCircle)
+                noiseMap = Noise.EditHeightMapWithCircle(noiseMap, noiseData.gradient, noiseData.gradientRate);
+            if (noiseData.useShape)
+                noiseMap = Noise.EditHeightMapWithTexture2D(noiseMap, noiseData.desireShape);
 
-            Color[] colorMap = new Color[mapChunkSize * mapChunkSize];
-            for (int y = 0; y < mapChunkSize; y++) {
-                for (int x = 0; x < mapChunkSize; x++) {
-                    float currentHeight = noiseMap[x, y];
-                    for (int i = 0; i < regions.Length; i++) {
-                        if (currentHeight <= regions[i].height) {
-                            colorMap[y * mapChunkSize + x] = regions[i].color;
-                            break;
-                        }
-                    }
+            byte[,] terrainMap = GenerateTerrainMap(noiseMap, terrainData);
+            Color[] colorMap = GenerateColorMap(terrainMap);
+
+            return new MapData(noiseMap, colorMap, terrainMap);
+        }
+
+        Color[] GenerateColorMap(byte[,] terrainMap) {
+            int height = terrainMap.GetLength(1);
+            int width = terrainMap.GetLength(0);
+            Color[] map = new Color[width * height];
+            for (int y = 0; y < height; ++y) {
+                for (int x = 0; x < width; ++x) {
+                    float gray = terrainMap[x, y] / 8f;
+                    map[y * width + x] = new Color(gray, gray, gray);
                 }
             }
-
-            return new MapData(noiseMap, colorMap);
-            
-            //switch (drawMode) {
-            //    case eDrawMode.NoiseMap:
-            //        break;
-            //    case eDrawMode.ColorMap:
-            //        break;
-            //    case eDrawMode.MeshMap:
-            //        break;
-            //}
+            return map;
         }
-    }
 
-    [System.Serializable]
-    public struct TerrainType {
-        public string name;
-        public float height;
-        public Color color;
+        byte[,] GenerateTerrainMap(float[,] heightMap, TerrainData terrainData) {
+            return terrainData.GenerateTerrainCode(heightMap);;
+        }
     }
 
     [System.Serializable]
     public struct MapData {
         public float[,] heightMap;
         public Color[] colorMap;
+        public byte[,] terrainMap;
 
-        public MapData(float[,] heightMap, Color[] colorMap) {
+        public MapData(float[,] heightMap, Color[] colorMap, byte[,] terrainMap){
             this.colorMap = colorMap;
             this.heightMap = heightMap;
+            this.terrainMap = terrainMap;
         }
     }
 

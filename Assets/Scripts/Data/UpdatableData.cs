@@ -4,12 +4,12 @@ using UnityEngine;
 
 
 public class UpdatableData : ScriptableObject {
-    public System.Action OnUpdate;
+    public System.Action OnValuesUpdate;
     public bool autoUpdate;
 
     protected virtual void OnValidate() {
         if (autoUpdate) {
-            OnUpdate?.Invoke();
+            OnValuesUpdate?.Invoke();
         }
     }
 }

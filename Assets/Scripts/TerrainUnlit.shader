@@ -2,8 +2,8 @@ Shader "Unlit/TerrainUnlit"
 {
     Properties
     {
-        _MainTex ("Texture", 2D) = "white" {}
-        
+        _TexMap ("Texture Map", 2D) = "white" {}
+        _MainTex ("Textures", 2D[]) = "white" {}
     }
     SubShader
     {
@@ -33,7 +33,8 @@ Shader "Unlit/TerrainUnlit"
                 float4 vertex : SV_POSITION;
             };
 
-            sampler2D _MainTex;
+            sampler2D _TexMap;
+            sampler2D[] _MainTex;
             float4 _MainTex_ST;
 
             v2f vert (appdata v)

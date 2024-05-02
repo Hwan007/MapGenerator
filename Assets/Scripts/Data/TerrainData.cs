@@ -16,7 +16,7 @@ public class TerrainData : UpdatableData
         byte[,] map = new byte[heightMap.GetLength(0), heightMap.GetLength(1)];
         foreach (var terrain in terrainSettings)
         {
-            terrain.condition?.SetTerrainCode(heightMap, map);
+            terrain.condition?.SetTerrainCode(terrain.terrainCode, heightMap, map);
         }
         return map;
     }
@@ -27,10 +27,6 @@ public struct TerrainSetting
 {
     public byte terrainCode;
     public Texture2D texture;
-    public iTerrainCondition condition;
-}
-
-public interface iTerrainCondition
-{
-    public byte[,] SetTerrainCode(float[,] heightMap, byte[,] terrainMap);
+    
+    public TerrainCondition condition;
 }

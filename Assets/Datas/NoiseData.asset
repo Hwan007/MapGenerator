@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88fc35b2df869034d8e86f0cc58331b7, type: 3}
   m_Name: NoiseData
   m_EditorClassIdentifier: 
-  autoUpdate: 1
+  autoUpdate: 0
   noiseScale: 100
   offset: {x: 0, y: 0}
   normalizeMode: 0

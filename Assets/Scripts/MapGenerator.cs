@@ -13,15 +13,17 @@ namespace MapGenerator
     }
     public enum eTerrainType
     {
-        Ocean,
-        Beach,
-        Grass,
-        Forest,
-        Dirt,
-        Rocky,
-        Lava,
-        Snow,
-        Frozen,
+        // 0000 0001 ~ 0000 1000 까지는 높이에 관련된 코드
+        Ocean = 1,
+        Ground = 2,
+        Heel = 4,
+        Mountain = 8,
+        // 0001 0000 ~ 1000 0000 까지는 지형 특성에 관련된 코드
+        Normal = 16,
+        Dirt = 32,
+        Lava = 64,
+        Snow = 128,
+        // 높이와 지형 특성 코드는 중첩 가능하지만, 높이끼리와 지형 특성끼리는 중첩되지 않는다.
     }
 
     public class MapGenerator : MonoBehaviour

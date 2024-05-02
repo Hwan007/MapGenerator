@@ -13,8 +13,11 @@ namespace MapGenerator {
             textureRender.transform.localScale = new Vector3(texture.width, 1, texture.height);
         }
 
-        public void DrawMesh(MeshData meshData, Texture2D texture) {
+        public void DrawMesh(MeshData meshData, Texture2D texture, Material material = null) {
             meshFilter.sharedMesh = meshData.CreateMesh();
+            if (material != null ) {
+                meshRenderer.sharedMaterial = material;
+            }
             meshRenderer.sharedMaterial.mainTexture = texture;
         }
     }

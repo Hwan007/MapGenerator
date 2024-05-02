@@ -9,21 +9,19 @@ namespace MapGenerator
     {
         NoiseMap,
         ColorMap,
-        MeshMap,
+        ColorMesh,
+        TextureMesh,
     }
     public enum eTerrainType
     {
-        // 0000 0001 ~ 0000 1000 까지는 높이에 관련된 코드
-        Ocean = 1,
-        Ground = 2,
-        Heel = 4,
-        Mountain = 8,
-        // 0001 0000 ~ 1000 0000 까지는 지형 특성에 관련된 코드
-        Normal = 16,
-        Dirt = 32,
-        Lava = 64,
-        Snow = 128,
-        // 높이와 지형 특성 코드는 중첩 가능하지만, 높이끼리와 지형 특성끼리는 중첩되지 않는다.
+        Ocean,
+        Ground,
+        Heel,
+        Mountain,
+        Normal,
+        Dirt,
+        Lava,
+        Snow,
     }
 
     public class MapGenerator : MonoBehaviour
@@ -35,8 +33,8 @@ namespace MapGenerator
         public NoiseData noiseData;
         public TextureData textureData;
         public TerrainData terrainData;
+        public Material colorMaterial;
         public Material terrainMaterial;
-
 
         [Header("확인용")]
         public List<MeshObject> meshObjs;
@@ -44,7 +42,7 @@ namespace MapGenerator
         public void DrawMapInEditor()
         {
             MapData map = GenerateMapData(noiseData, terrainData);
-
+            // TODO : change display to Pooling object;
             MapDisplay display = FindObjectOfType<MapDisplay>();
             switch (drawMode)
             {
@@ -54,8 +52,11 @@ namespace MapGenerator
                 case eDrawMode.ColorMap:
                     display.DrawTexture(TextureGenerator.TextureFromColorMap(map.colorMap, mapChunkSize, mapChunkSize));
                     break;
-                case eDrawMode.MeshMap:
-                    display.DrawMesh(MeshGenerator.GenerateMesh(map.heightMap, terrainData.levelOfDetail, terrainData.heightMultiplier, terrainData.baseXZLength), TextureGenerator.TextureFromColorMap(map.colorMap, mapChunkSize, mapChunkSize));
+                case eDrawMode.ColorMesh:
+                    display.DrawMesh(MeshGenerator.GenerateMesh(map.heightMap, terrainData.levelOfDetail, terrainData.heightMultiplier, terrainData.baseXZLength), TextureGenerator.TextureFromColorMap(map.colorMap, mapChunkSize, mapChunkSize), colorMaterial);
+                    break;
+                case eDrawMode.TextureMesh:
+                    // TODO 
                     break;
             }
         }
@@ -69,12 +70,12 @@ namespace MapGenerator
                 noiseMap = Noise.EditHeightMapWithTexture2D(noiseMap, noiseData.desireShape);
 
             byte[,] terrainMap = GenerateTerrainMap(noiseMap, terrainData);
-            Color[] colorMap = GenerateColorMap(terrainMap);
+            Color[] colorMap = GenerateColorMap(terrainMap, terrainData);
 
             return new MapData(noiseMap, colorMap, terrainMap);
         }
 
-        Color[] GenerateColorMap(byte[,] terrainMap)
+        Color[] GenerateColorMap(byte[,] terrainMap, TerrainData terrainData)
         {
             int height = terrainMap.GetLength(1);
             int width = terrainMap.GetLength(0);
@@ -83,8 +84,7 @@ namespace MapGenerator
             {
                 for (int x = 0; x < width; ++x)
                 {
-                    float gray = terrainMap[x, y] / 8f;
-                    map[y * width + x] = new Color(gray, gray, gray);
+                    map[y * width + x] = terrainData.terrainSettings[terrainMap[x,y]].fallbackColor;
                 }
             }
             return map;

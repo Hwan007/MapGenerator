@@ -25,8 +25,9 @@ public class TerrainData : UpdatableData
 [System.Serializable]
 public struct TerrainSetting
 {
+    [Range(0,255)]
     public byte terrainCode;
     public Texture2D texture;
-    
+    public Color fallbackColor;
     public TerrainCondition condition;
 }

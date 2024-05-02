@@ -4,9 +4,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-namespace MapGenerator {
+namespace MapGenerator
+{
     [CreateAssetMenu()]
-    public class NoiseData : UpdatableData {
+    public class NoiseData : UpdatableData
+    {
         public float noiseScale;
         public Vector2 offset;
         public Noise.eNormalizeMode normalizeMode;
@@ -21,16 +23,34 @@ namespace MapGenerator {
         public bool useCircle;
         public float gradient;
         public float gradientRate;
+
+        protected override void OnValidate()
+        {
+            for (int i = 0; i < settings.Length; ++i)
+            {
+                if (settings[i].valueRatio > 1)
+                {
+                    settings[i].valueRatio = 1;
+                }
+                if (settings[i].scaleRatio < 1)
+                {
+                    settings[i].scaleRatio = 1;
+                }
+            }
+
+            base.OnValidate();
+        }
     }
 
     [System.Serializable]
-    public struct NoiseMapSetting {
+    public struct NoiseMapSetting
+    {
         /// <summary>
-        /// »Ì¾Æ³½ PerlinNoise °ªÀ» ¾î´À Á¤µµ ¹İ¿µÇÒ °ÍÀÎÁö °áÁ¤ÇÑ´Ù.
+        /// Perlin Noise ê°’ì´ ì–´ëŠ ì •ë„ ë°˜ì˜ë˜ëŠ”ì§€ ê²°ì •
         /// </summary>
         public float valueRatio;
         /// <summary>
-        /// PerlinNoise¸¦ ´ëÀÔÇÏ´Â ÁÂÇ¥°ª(x,y)ÀÇ ±â¿ï±â(º¯È­À²)ÀÌ´Ù.
+        /// Perlin Noise ì— ë„£ëŠ” ì¢Œí‘œê°’ì„ ë³€í™”ìœ¨
         /// </summary>
         public float scaleRatio;
     }

@@ -39,10 +39,9 @@ Shader "Unlit/TerrainUnlit"
                 float4 vertex : SV_POSITION;
             };
 
-            StructuredBuffer<uint> _Map;
-            int height;
-            int width;
-            
+            sampler2D _Map0;
+            sampler2D _Map1;
+
             // texture for each point
             sampler2D _MainTex0;
             sampler2D _MainTex1;
@@ -65,7 +64,7 @@ Shader "Unlit/TerrainUnlit"
 
             int GetTextureIndex(int x, int y)
             {
-
+                
             }
 
             v2f vert (appdata v)

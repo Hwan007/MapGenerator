@@ -1,3 +1,4 @@
+using MapGenerator;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -25,8 +26,7 @@ public class TerrainData : UpdatableData
 [System.Serializable]
 public struct TerrainSetting
 {
-    [Range(0,255)]
-    public byte terrainCode;
+    public eTerrainType terrainCode;
     public Texture2D texture;
     public Color fallbackColor;
     public TerrainCondition condition;

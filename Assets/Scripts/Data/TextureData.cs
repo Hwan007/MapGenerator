@@ -20,6 +20,11 @@ namespace MapGenerator {
             Texture2D convertToTextureRight = CodeMapToTexture(map, eTerrainType.Mountain, eTerrainType.Heel, eTerrainType.Ground, eTerrainType.Ocean);
             material.SetTexture("_Map0", convertToTextureLeft);
             material.SetTexture("_Map1", convertToTextureRight);
+
+            string texName = "_MainTex";
+            for (int i = 0; i <  texture2Ds.Count; ++i) {
+                material.SetTexture(texName+i.ToString(), texture2Ds[i]);
+            }
         }
 
         public void UpdateMapMixing(Material material, float mix) {

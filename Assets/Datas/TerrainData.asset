@@ -12,14 +12,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af7012c0f05a01d45a78203170452cf1, type: 3}
   m_Name: TerrainData
   m_EditorClassIdentifier: 
-  autoUpdate: 0
+  autoUpdate: 1
   levelOfDetail: 0
   baseXZLength: 1
   heightMultiplier: 10
   terrainSettings:
-  - terrainCode: 0
-    texture: {fileID: 2800000, guid: 20aa0f234461fbc46ae6fe91f504e2f6, type: 3}
+  - terrainCode: 1
+    fallbackColor: {r: 0, g: 0.28409004, b: 1, a: 0}
     condition: {fileID: 11400000, guid: 2554f5827964a2343a8faa697f5bac0d, type: 2}
-  - terrainCode: 0
-    texture: {fileID: 2800000, guid: deb64ef6450ec574db0af67225551acf, type: 3}
+  - terrainCode: 2
+    fallbackColor: {r: 0.27153882, g: 0.6509434, b: 0.2620149, a: 0}
     condition: {fileID: 11400000, guid: 84eb1d95175f4614fb3c479580e0f7a7, type: 2}
+  - terrainCode: 4
+    fallbackColor: {r: 0.6019036, g: 0.735849, b: 0.2545389, a: 0}
+    condition: {fileID: 11400000, guid: a96454e9d3d4cef4b8595fad07d5aec7, type: 2}
+  - terrainCode: 8
+    fallbackColor: {r: 0.764151, g: 0.7357106, b: 0.6824493, a: 0}
+    condition: {fileID: 11400000, guid: c5ddb7403fea08d48883129e3baaaec2, type: 2}

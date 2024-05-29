@@ -1,3 +1,4 @@
+using MapGenerator;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,9 +9,9 @@ using UnityEngine;
 public class HeightCondition : TerrainCondition {
     public float fromHeight;
     public float toHeight;
-    public byte[] allowedCode;
+    public eTerrainType[] allowedCode;
 
-    public override byte[,] SetTerrainCode(byte code, float[,] heightMap, byte[,] terrainMap) {
+    public override byte[,] SetTerrainCode(eTerrainType code, float[,] heightMap, byte[,] terrainMap) {
         int height = heightMap.GetLength(1);
         int width = heightMap.GetLength(0);
         byte[,] map = new byte[width, height];
@@ -18,8 +19,8 @@ public class HeightCondition : TerrainCondition {
         for (int y = 0; y < height; ++y) {
             for (int x = 0; x < width; ++x) {
                 float altitude = heightMap[x, y];
-                if (allowedCode.Contains(terrainMap[x, y]) && altitude <= toHeight && altitude >= fromHeight) {
-                    map[x, y] = code;
+                if (allowedCode.Contains((eTerrainType)terrainMap[x, y]) && altitude <= toHeight && altitude >= fromHeight) {
+                    map[x, y] = (byte)code;
                 }
                 else
                     map[x, y] = terrainMap[x, y];

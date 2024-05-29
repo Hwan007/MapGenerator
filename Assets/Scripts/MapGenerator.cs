@@ -2,12 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Pool;
 
 namespace MapGenerator {
     public enum eDrawMode {
         NoiseMap,
         ColorMap,
-        ColorMesh,
         TextureMesh,
     }
     public enum eTerrainType {
@@ -22,38 +22,44 @@ namespace MapGenerator {
     }
 
     public class MapGenerator : MonoBehaviour {
+        public static int mapChunkSize = 241;
+
         public eDrawMode drawMode;
         public bool autoUpdate;
-        const int mapChunkSize = 241;
-
+        [Range(1, 5)] public int numberOfMesh;
         public NoiseData noiseData;
         public TextureData textureData;
         public TerrainData terrainData;
-        public Material colorMaterial;
         public Material terrainMaterial;
+        public Material defaultMaterial;
+        public MapDisplay mapPrefab;
+        public List<MapDisplay> deployedMeshList;
 
-        [Header("확인용")]
-        public List<MeshObject> meshObjs;
+        public void GenerateMap() {
+            List<MapData> mapList = new List<MapData>();
+            for (int y = 0; y < numberOfMesh; ++y) {
+                for (int x = 0; x < numberOfMesh; ++x) {
+                    mapList.Add(GenerateMapData(noiseData.Offset(new Vector2(mapChunkSize * x, mapChunkSize * y)), terrainData));
+                }
+            }
 
-        public void DrawMapInEditor() {
-            MapData map = GenerateMapData(noiseData, terrainData);
-            // TODO : change display to Pooling object;
-            MapDisplay display = FindObjectOfType<MapDisplay>();
-            switch (drawMode) {
-                case eDrawMode.NoiseMap:
-                    display.DrawTexture(TextureGenerator.TextureFromHeightMap(map.heightMap));
-                    break;
-                case eDrawMode.ColorMap:
-                    display.DrawTexture(TextureGenerator.TextureFromColorMap(map.colorMap, mapChunkSize, mapChunkSize));
-                    break;
-                case eDrawMode.ColorMesh:
-                    display.DrawMesh(MeshGenerator.GenerateMesh(map.heightMap, terrainData.levelOfDetail, terrainData.heightMultiplier, terrainData.baseXZLength), TextureGenerator.TextureFromColorMap(map.colorMap, mapChunkSize, mapChunkSize), colorMaterial);
-                    break;
-                case eDrawMode.TextureMesh:
-                    // TODO 
-                    break;
+            while (deployedMeshList.Count > numberOfMesh * numberOfMesh) {
+                Destroy(deployedMeshList[deployedMeshList.Count]);
+                deployedMeshList.RemoveAt(deployedMeshList.Count);
+            }
+            while (deployedMeshList.Count < numberOfMesh * numberOfMesh) {
+                deployedMeshList.Add(Instantiate(mapPrefab).Init());
+            }
+
+            Material targetMat = drawMode == eDrawMode.TextureMesh ? terrainMaterial : defaultMaterial;
+            for (int y = 0; y < numberOfMesh; ++y) {
+                for (int x = 0; x < numberOfMesh; ++x) {
+                    deployedMeshList[y * numberOfMesh + x].Draw(drawMode, mapList[y * numberOfMesh + x], targetMat, terrainData, textureData);
+                }
             }
         }
+
+
 
         MapData GenerateMapData(NoiseData noiseData, TerrainData terrainData) {
             float[,] noiseMap = Noise.GenerateNoiseMap(mapChunkSize, mapChunkSize, noiseData.noiseScale, noiseData.offset, noiseData.seed, noiseData.settings, noiseData.normalizeMode, noiseData.heightMultiplierCurve);
@@ -84,29 +90,18 @@ namespace MapGenerator {
             return terrainData.GenerateTerrainCode(heightMap);
         }
 
-        void OnValuesUpdate() {
-            if (!Application.isPlaying) {
-                DrawMapInEditor();
-            }
-        }
-
-        void OnTextureValuesUpdate() {
-            textureData.ApplyToMaterial(terrainMaterial);
-        }
-
-
         private void OnValidate() {
-            if (terrainData != null) {
-                terrainData.OnValuesUpdate -= OnValuesUpdate;
-                terrainData.OnValuesUpdate += OnValuesUpdate;
-            }
             if (noiseData != null) {
-                noiseData.OnValuesUpdate -= OnValuesUpdate;
-                noiseData.OnValuesUpdate += OnValuesUpdate;
+                noiseData.OnValuesUpdate -= GenerateMap;
+                noiseData.OnValuesUpdate += GenerateMap;
+            }
+            if (terrainData != null) {
+                terrainData.OnValuesUpdate -= GenerateMap;
+                terrainData.OnValuesUpdate += GenerateMap;
             }
             if (textureData != null) {
-                textureData.OnValuesUpdate -= OnTextureValuesUpdate;
-                textureData.OnValuesUpdate += OnTextureValuesUpdate;
+                textureData.OnValuesUpdate -= GenerateMap;
+                textureData.OnValuesUpdate += GenerateMap;
             }
         }
     }
@@ -132,12 +127,14 @@ namespace MapGenerator {
 
             if (DrawDefaultInspector()) {
                 if (mapGen.autoUpdate) {
-                    mapGen.DrawMapInEditor();
+                    mapGen.GenerateMap();
+                    EditorUtility.SetDirty(mapGen);
                 }
             }
 
             if (GUILayout.Button("Generate")) {
-                mapGen.DrawMapInEditor();
+                mapGen.GenerateMap();
+                EditorUtility.SetDirty(mapGen);
             }
         }
     }

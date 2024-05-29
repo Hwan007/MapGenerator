@@ -1,6 +1,7 @@
 using MapGenerator;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 
@@ -24,7 +25,7 @@ namespace MapGenerator
         public float gradient;
         public float gradientRate;
 
-        protected override void OnValidate()
+        protected void OnValidate()
         {
             for (int i = 0; i < settings.Length; ++i)
             {
@@ -37,21 +38,23 @@ namespace MapGenerator
                     settings[i].scaleRatio = 1;
                 }
             }
+        }
 
-            base.OnValidate();
+        public NoiseData Offset(Vector2 offset) {
+            this.offset = offset;
+            return this;
         }
     }
 
     [System.Serializable]
     public struct NoiseMapSetting
     {
-        /// <summary>
-        /// Perlin Noise 값이 어느 정도 반영되는지 결정
-        /// </summary>
         public float valueRatio;
-        /// <summary>
-        /// Perlin Noise 에 넣는 좌표값을 변화율
-        /// </summary>
         public float scaleRatio;
+    }
+
+    [CustomEditor(typeof(NoiseData))]
+    public class CustomEditorNoiseData : CustomEditorUpdatableData {
+
     }
 }

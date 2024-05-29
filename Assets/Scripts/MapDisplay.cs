@@ -18,7 +18,7 @@ namespace MapGenerator {
                     break;
                 case eDrawMode.TextureMesh:
                     DrawMesh(MeshGenerator.GenerateMesh(map.heightMap, terrainData.levelOfDetail, terrainData.heightMultiplier, terrainData.baseXZLength));
-                    textureData.ApplyToMaterial(material, map.terrainMap);
+                    textureData.ApplyToMaterial(material, map.codeMap);
                     break;
             }
         }

@@ -55,11 +55,10 @@ namespace MapGenerator {
             for (int y = 0; y < numberOfMesh; ++y) {
                 for (int x = 0; x < numberOfMesh; ++x) {
                     deployedMeshList[y * numberOfMesh + x].Draw(drawMode, mapList[y * numberOfMesh + x], targetMat, terrainData, textureData);
+                    deployedMeshList[y * numberOfMesh + x].transform.position = new Vector3(x * terrainData.baseXZLength * mapChunkSize, 0, y * terrainData.baseXZLength * mapChunkSize);
                 }
             }
         }
-
-
 
         MapData GenerateMapData(NoiseData noiseData, TerrainData terrainData) {
             float[,] noiseMap = Noise.GenerateNoiseMap(mapChunkSize, mapChunkSize, noiseData.noiseScale, noiseData.offset, noiseData.seed, noiseData.settings, noiseData.normalizeMode, noiseData.heightMultiplierCurve);
@@ -68,10 +67,10 @@ namespace MapGenerator {
             if (noiseData.useShape)
                 noiseMap = Noise.EditHeightMapWithTexture2D(noiseMap, noiseData.desireShape);
 
-            byte[,] terrainMap = GenerateTerrainMap(noiseMap, terrainData);
-            Color[] colorMap = GenerateColorMap(terrainMap, terrainData);
+            byte[,] codeMap = GenerateTerrainMap(noiseMap, terrainData);
+            Color[] colorMap = GenerateColorMap(codeMap, terrainData);
 
-            return new MapData(noiseMap, colorMap, terrainMap);
+            return new MapData(noiseMap, colorMap, codeMap);
         }
 
         Color[] GenerateColorMap(byte[,] terrainMap, TerrainData terrainData) {
@@ -110,12 +109,12 @@ namespace MapGenerator {
     public struct MapData {
         public float[,] heightMap;
         public Color[] colorMap;
-        public byte[,] terrainMap;
+        public byte[,] codeMap;
 
-        public MapData(float[,] heightMap, Color[] colorMap, byte[,] terrainMap) {
+        public MapData(float[,] heightMap, Color[] colorMap, byte[,] codeMap) {
             this.colorMap = colorMap;
             this.heightMap = heightMap;
-            this.terrainMap = terrainMap;
+            this.codeMap = codeMap;
         }
     }
 

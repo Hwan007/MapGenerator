@@ -2,6 +2,8 @@ Shader "Unlit/TerrainUnlit"
 {
     Properties
     {
+        _Map0 ("Map 0", 2D) = "white" {}
+        _Map1 ("Map 1", 2D) = "white" {}
         _MainTex0 ("Main Texture 0", 2D) = "white" {}
         _MainTex1 ("Main Texture 1", 2D) = "white" {}
         _MainTex2 ("Main Texture 2", 2D) = "white" {}
@@ -81,7 +83,7 @@ Shader "Unlit/TerrainUnlit"
 
             float mixScale;
             float mixPower;
-            /*
+            
             fixed4 GetCodeAround(sampler2D map, float2 uv, float radius)
             {
                 fixed4 codeAdd = {0,0,0,0};
@@ -110,7 +112,7 @@ Shader "Unlit/TerrainUnlit"
 
                 return index;
             }
-            */
+            
             v2f vert (appdata v)
             {
                 v2f o;

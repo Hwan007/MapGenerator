@@ -44,8 +44,8 @@ namespace MapGenerator {
             }
 
             while (deployedMeshList.Count > numberOfMesh * numberOfMesh) {
-                Destroy(deployedMeshList[deployedMeshList.Count]);
-                deployedMeshList.RemoveAt(deployedMeshList.Count);
+                DestroyImmediate(deployedMeshList[deployedMeshList.Count-1]);
+                deployedMeshList.RemoveAt(deployedMeshList.Count-1);
             }
             while (deployedMeshList.Count < numberOfMesh * numberOfMesh) {
                 deployedMeshList.Add(Instantiate(mapPrefab).Init());

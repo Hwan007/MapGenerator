@@ -41,11 +41,14 @@ namespace MapGenerator {
                 for (int x = 0; x < width; ++x) {
                     byte even = map[x / 2, y / 2];
                     byte odd = map[x / 2 + x % 2, y / 2 + y % 2];
-                    float r = ((even & (byte)type0) != 0 ? 0.5f : 0) + ((odd & (byte)type0) != 0 ? 0.5f : 0);
-                    float g = ((even & (byte)type1) != 0 ? 0.5f : 0) + ((odd & (byte)type1) != 0 ? 0.5f : 0);
-                    float b = ((even & (byte)type2) != 0 ? 0.5f : 0) + ((odd & (byte)type2) != 0 ? 0.5f : 0);
-                    float a = ((even & (byte)type3) != 0 ? 0.5f : 0) + ((odd & (byte)type3) != 0 ? 0.5f : 0);
-
+                    //float r = ((even & (byte)type0) != 0 ? 0.5f : 0) + ((odd & (byte)type0) != 0 ? 0.5f : 0);
+                    //float g = ((even & (byte)type1) != 0 ? 0.5f : 0) + ((odd & (byte)type1) != 0 ? 0.5f : 0);
+                    //float b = ((even & (byte)type2) != 0 ? 0.5f : 0) + ((odd & (byte)type2) != 0 ? 0.5f : 0);
+                    //float a = ((even & (byte)type3) != 0 ? 0.5f : 0) + ((odd & (byte)type3) != 0 ? 0.5f : 0);
+                    float r = ((even == (byte)type0) ? 0.5f : 0) + ((odd == (byte)type0) ? 0.5f : 0);
+                    float g = ((even == (byte)type1) ? 0.5f : 0) + ((odd == (byte)type1) ? 0.5f : 0);
+                    float b = ((even == (byte)type2) ? 0.5f : 0) + ((odd == (byte)type2) ? 0.5f : 0);
+                    float a = ((even == (byte)type3) ? 0.5f : 0) + ((odd == (byte)type3) ? 0.5f : 0);
                     convertToColor[width * y + x] = new Color(r, g, b, a);
                 }
             }

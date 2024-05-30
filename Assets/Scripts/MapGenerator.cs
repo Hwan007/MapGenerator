@@ -11,14 +11,14 @@ namespace MapGenerator {
         TextureMesh,
     }
     public enum eTerrainType {
-        Ocean = 1,
-        Ground = 2,
-        Heel = 4,
-        Mountain = 8,
-        Normal = 16,
-        Dirt = 32,
-        Lava = 64,
-        Snow = 128,
+        Ocean = 0x00000001,
+        Ground = 0x00000010,
+        Heel = 0x00000100,
+        Mountain = 0x00001000,
+        Normal = 0x00010000,
+        Dirt = 0x00100000,
+        Lava = 0x01000000,
+        Snow = 0x10000000,
     }
 
     public class MapGenerator : MonoBehaviour {

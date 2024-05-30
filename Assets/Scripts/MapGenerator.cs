@@ -44,7 +44,11 @@ namespace MapGenerator {
             }
 
             while (deployedMeshList.Count > numberOfMesh * numberOfMesh) {
+#if UNITY_EDITOR
                 DestroyImmediate(deployedMeshList[deployedMeshList.Count-1]);
+#else
+                Destroy(deployedMeshList[deployedMeshList.Count-1]);
+#endif
                 deployedMeshList.RemoveAt(deployedMeshList.Count-1);
             }
             while (deployedMeshList.Count < numberOfMesh * numberOfMesh) {

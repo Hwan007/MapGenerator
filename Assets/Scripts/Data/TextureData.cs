@@ -32,8 +32,8 @@ namespace MapGenerator {
         }
 
         Texture2D CodeMapToTexture(byte[,] map, eTerrainType type0, eTerrainType type1, eTerrainType type2, eTerrainType type3) {
-            int height = map.GetLength(1) * 2;
-            int width = map.GetLength(0) * 2;
+            int height = map.GetLength(1) * 2 - 1;
+            int width = map.GetLength(0) * 2 - 1;
             Color[] convertToColor = new Color[width * height];
             Texture2D convertToTexture = new Texture2D(width, height);
 
@@ -46,7 +46,7 @@ namespace MapGenerator {
                     float b = ((even & (byte)type2) != 0 ? 0.5f : 0) + ((odd & (byte)type2) != 0 ? 0.5f : 0);
                     float a = ((even & (byte)type3) != 0 ? 0.5f : 0) + ((odd & (byte)type3) != 0 ? 0.5f : 0);
 
-                    convertToColor[width * y + x] = new Color(r,g,b,a);
+                    convertToColor[width * y + x] = new Color(r, g, b, a);
                 }
             }
 

@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: OceanCondition
   m_EditorClassIdentifier: 
   fromHeight: 0
-  toHeight: 10
-  allowedCode: 01000000020000000400000008000000
+  toHeight: 0.1
+  allowedCode: 100000000001000000100000

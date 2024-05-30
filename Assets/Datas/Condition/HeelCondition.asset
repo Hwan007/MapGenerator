@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61f4a381871dd2148b313d2b6a0c21f8, type: 3}
   m_Name: HeelCondition
   m_EditorClassIdentifier: 
-  fromHeight: 20
-  toHeight: 30
-  allowedCode: 01000000020000000400000008000000
+  fromHeight: 0.5
+  toHeight: 0.8
+  allowedCode: 010000001000000000100000

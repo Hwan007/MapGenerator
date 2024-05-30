@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61f4a381871dd2148b313d2b6a0c21f8, type: 3}
   m_Name: GroundCondition
   m_EditorClassIdentifier: 
-  fromHeight: 10
-  toHeight: 20
-  allowedCode: 01000000020000000400000008000000
+  fromHeight: 0.1
+  toHeight: 0.5
+  allowedCode: 010000000001000000100000

@@ -11,14 +11,14 @@ namespace MapGenerator {
         TextureMesh,
     }
     public enum eTerrainType {
-        Ocean = 0x00000001,
-        Ground = 0x00000010,
-        Heel = 0x00000100,
-        Mountain = 0x00001000,
-        Normal = 0x00010000,
-        Dirt = 0x00100000,
-        Lava = 0x01000000,
-        Snow = 0x10000000,
+        Ocean,
+        Ground,
+        Heel,
+        Mountain,
+        Normal,
+        Dirt,
+        Lava,
+        Snow,
     }
 
     public class MapGenerator : MonoBehaviour {
@@ -83,7 +83,15 @@ namespace MapGenerator {
             Color[] map = new Color[width * height];
             for (int y = 0; y < height; ++y) {
                 for (int x = 0; x < width; ++x) {
-                    map[y * width + x] = terrainData.terrainSettings[terrainMap[x, y]].fallbackColor;
+                    int index=0;
+                    int value = terrainMap[x, y];
+                    while (value > 0) {
+                        if (value == 1)
+                            break;
+                        value = value >> 1;
+                        ++index;
+                    }
+                    map[y * width + x] = terrainData.terrainSettings[index].fallbackColor;
                 }
             }
             return map;

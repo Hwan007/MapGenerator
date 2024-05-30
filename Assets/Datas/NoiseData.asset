@@ -56,7 +56,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  useShape: 0
+  useShape: 1
   desireShape: {fileID: 2800000, guid: 96e4e02623543d045ac1cfdfabac6838, type: 3}
   useCircle: 0
   gradient: 0.1

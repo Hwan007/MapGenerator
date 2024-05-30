@@ -40,10 +40,10 @@ namespace MapGenerator {
             for (int y = 0; y < height; ++y) {
                 for (int x = 0; x < width; ++x) {
                     convertToColor[width * y + x] = new Color(
-                        (map[x, y] & (int)type0) != 0 ? 1 : 0,
-                        (map[x, y] & (int)type1) != 0 ? 1 : 0,
-                        (map[x, y] & (int)type2) != 0 ? 1 : 0,
-                        (map[x, y] & (int)type3) != 0 ? 1 : 0);
+                        (map[x, y] & (byte)type0) != 0 ? 1 : 0,
+                        (map[x, y] & (byte)type1) != 0 ? 1 : 0,
+                        (map[x, y] & (byte)type2) != 0 ? 1 : 0,
+                        (map[x, y] & (byte)type3) != 0 ? 1 : 0);
                 }
             }
 

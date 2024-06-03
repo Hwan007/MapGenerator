@@ -12,20 +12,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af7012c0f05a01d45a78203170452cf1, type: 3}
   m_Name: TerrainData
   m_EditorClassIdentifier: 
-  autoUpdate: 1
+  autoUpdate: 0
   levelOfDetail: 0
   baseXZLength: 1
   heightMultiplier: 50
   terrainSettings:
-  - terrainCode: 1
-    fallbackColor: {r: 0.33236915, g: 0.4969033, b: 0.9150943, a: 0}
+  - terrainCode: 0
+    fallbackColor: {r: 0.33236915, g: 0.4969033, b: 0.9150943, a: 1}
     condition: {fileID: 11400000, guid: 2554f5827964a2343a8faa697f5bac0d, type: 2}
-  - terrainCode: 16
-    fallbackColor: {r: 0.27153882, g: 0.6509434, b: 0.2620149, a: 0}
+  - terrainCode: 1
+    fallbackColor: {r: 0.27153882, g: 0.6509434, b: 0.2620149, a: 1}
     condition: {fileID: 11400000, guid: 84eb1d95175f4614fb3c479580e0f7a7, type: 2}
-  - terrainCode: 256
-    fallbackColor: {r: 0.6019036, g: 0.735849, b: 0.2545389, a: 0}
+  - terrainCode: 2
+    fallbackColor: {r: 0.6019036, g: 0.735849, b: 0.2545389, a: 1}
     condition: {fileID: 11400000, guid: a96454e9d3d4cef4b8595fad07d5aec7, type: 2}
-  - terrainCode: 4096
-    fallbackColor: {r: 0.764151, g: 0.7357106, b: 0.6824493, a: 0}
+  - terrainCode: 3
+    fallbackColor: {r: 0.764151, g: 0.7357106, b: 0.6824493, a: 1}
     condition: {fileID: 11400000, guid: c5ddb7403fea08d48883129e3baaaec2, type: 2}

@@ -8,11 +8,12 @@ namespace MapGenerator {
     [CreateAssetMenu()]
     public class TextureData : UpdatableData {
         public float mixScale;
+        public float mixPower;
         public List<Texture2D> texture2Ds;
 
         public void ApplyToMaterial(Material material, byte[,] map) {
             UpdateMapTexture(material, map);
-            UpdateMapMixing(material, mixScale);
+            UpdateMapMixing(material, mixScale, mixPower);
         }
 
         public void UpdateMapTexture(Material material, byte[,] map) {
@@ -27,8 +28,9 @@ namespace MapGenerator {
             }
         }
 
-        public void UpdateMapMixing(Material material, float mix) {
-            material.SetFloat("mixScale", mix);
+        public void UpdateMapMixing(Material material, float mixScale, float mixPower) {
+            material.SetFloat("mixScale", mixScale);
+            material.SetFloat("mixPower", mixPower);
         }
 
         Texture2D CodeMapToTexture(byte[,] map, eTerrainType type0, eTerrainType type1, eTerrainType type2, eTerrainType type3) {
@@ -41,10 +43,6 @@ namespace MapGenerator {
                 for (int x = 0; x < width; ++x) {
                     byte even = map[x / 2, y / 2];
                     byte odd = map[x / 2 + x % 2, y / 2 + y % 2];
-                    //float r = ((even & (byte)type0) != 0 ? 0.5f : 0) + ((odd & (byte)type0) != 0 ? 0.5f : 0);
-                    //float g = ((even & (byte)type1) != 0 ? 0.5f : 0) + ((odd & (byte)type1) != 0 ? 0.5f : 0);
-                    //float b = ((even & (byte)type2) != 0 ? 0.5f : 0) + ((odd & (byte)type2) != 0 ? 0.5f : 0);
-                    //float a = ((even & (byte)type3) != 0 ? 0.5f : 0) + ((odd & (byte)type3) != 0 ? 0.5f : 0);
                     float r = ((even == (byte)type0) ? 0.5f : 0) + ((odd == (byte)type0) ? 0.5f : 0);
                     float g = ((even == (byte)type1) ? 0.5f : 0) + ((odd == (byte)type1) ? 0.5f : 0);
                     float b = ((even == (byte)type2) ? 0.5f : 0) + ((odd == (byte)type2) ? 0.5f : 0);

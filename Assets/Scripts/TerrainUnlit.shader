@@ -102,14 +102,20 @@ Shader "Unlit/TerrainUnlit"
                 return codeAdd;
             }
             
-            fixed4 GetTextureIndex(sampler2D map, float2 uv, float mixScale, float mixPower)
+            fixed4 GetTextureIndex(sampler2D map, float2 uv, float mixScale = 0, float mixPower = 0)
             {
                 fixed4 code = tex2Dlod(map, float4(uv.xy, 0, 0));
-                fixed4 codeAround = GetCodeAround(map, uv, mixScale);
+                fixed4 codeRet;
 
-                fixed4 codeRet = code + codeAround * mixPower;
+                if (mixScale == 0 && mixPower == 0) {
+                    fixed4 codeAround = GetCodeAround(map, uv, mixScale);
+                    codeRet = code + codeAround * mixPower;
+                }
+                else {
+                    codeRet = code;
+                }
+
                 fixed4 index = {clamp(codeRet.r,0,1), clamp(codeRet.g,0,1), clamp(codeRet.b,0,1), clamp(codeRet.a,0,1)};
-
                 return index;
             }
             
@@ -137,15 +143,10 @@ Shader "Unlit/TerrainUnlit"
             fixed4 frag (v2f i) : SV_Target
             {
                 // sample the texture
-                fixed4 col = {0,0,0,0};
-                col += tex2D(_MainTex0, i.uv0) * i.colorLeft.r;
-                col += tex2D(_MainTex1, i.uv1) * i.colorLeft.g;
-                col += tex2D(_MainTex2, i.uv2) * i.colorLeft.b;
-                col += tex2D(_MainTex3, i.uv3) * i.colorLeft.w;
-                col += tex2D(_MainTex4, i.uv4) * i.colorRight.r;
-                col += tex2D(_MainTex5, i.uv5) * i.colorRight.g;
-                col += tex2D(_MainTex6, i.uv6) * i.colorRight.b;
-                col += tex2D(_MainTex7, i.uv7) * i.colorRight.w;
+                fixed4 col;
+                col = tex2D(_MainTex0, i.uv0) * i.colorLeft.r + tex2D(_MainTex1, i.uv1) * i.colorLeft.g + tex2D(_MainTex2, i.uv2) * i.colorLeft.b + tex2D(_MainTex3, i.uv3) * i.colorLeft.a;
+                col += tex2D(_MainTex4, i.uv4) * i.colorRight.r + tex2D(_MainTex5, i.uv5) * i.colorRight.g + tex2D(_MainTex6, i.uv6) * i.colorRight.b + tex2D(_MainTex7, i.uv7) * i.colorRight.a;
+
                 // apply fog
                 UNITY_APPLY_FOG(i.fogCoord, col);
                 return col;

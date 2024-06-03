@@ -12,14 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d203182646747ce499db155ceab6470b, type: 3}
   m_Name: TextureData
   m_EditorClassIdentifier: 
-  autoUpdate: 1
+  autoUpdate: 0
   mixScale: 0
+  mixPower: 0
   texture2Ds:
   - {fileID: 2800000, guid: 75b807f3d28ec1644aeac1e8f4a2d857, type: 3}
   - {fileID: 2800000, guid: 3d7e23f397bd4e347bc2a33df00d0897, type: 3}
   - {fileID: 2800000, guid: b30ef1b99587eb844b863df6c6535bd7, type: 3}
   - {fileID: 2800000, guid: 6ae24699072028c47b5e79666801b5bf, type: 3}
   - {fileID: 2800000, guid: 75b807f3d28ec1644aeac1e8f4a2d857, type: 3}
-  - {fileID: 2800000, guid: 75b807f3d28ec1644aeac1e8f4a2d857, type: 3}
-  - {fileID: 2800000, guid: 75b807f3d28ec1644aeac1e8f4a2d857, type: 3}
-  - {fileID: 2800000, guid: 75b807f3d28ec1644aeac1e8f4a2d857, type: 3}
+  - {fileID: 2800000, guid: 3d7e23f397bd4e347bc2a33df00d0897, type: 3}
+  - {fileID: 2800000, guid: b30ef1b99587eb844b863df6c6535bd7, type: 3}
+  - {fileID: 2800000, guid: 6ae24699072028c47b5e79666801b5bf, type: 3}

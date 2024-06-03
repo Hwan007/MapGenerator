@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Pool;
@@ -81,19 +82,15 @@ namespace MapGenerator {
             int height = terrainMap.GetLength(1);
             int width = terrainMap.GetLength(0);
             Color[] map = new Color[width * height];
+            //StringBuilder sb = new StringBuilder();
             for (int y = 0; y < height; ++y) {
                 for (int x = 0; x < width; ++x) {
-                    int index=0;
-                    int value = terrainMap[x, y];
-                    while (value > 0) {
-                        if (value == 1)
-                            break;
-                        value = value >> 1;
-                        ++index;
-                    }
-                    map[y * width + x] = terrainData.terrainSettings[index].fallbackColor;
+                    map[y * width + x] = terrainData.terrainSettings[terrainMap[x, y]].fallbackColor;
+                    //sb.Append(terrainMap[x, y]);
                 }
+                //sb.Append("|\n");
             }
+            //Debug.Log(sb.ToString());
             return map;
         }
 

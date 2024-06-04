@@ -17,8 +17,8 @@ namespace MapGenerator {
         }
 
         public void UpdateMapTexture(Material material, byte[,] map) {
-            Texture2D convertToTextureLeft = CodeMapToTexture(map, eTerrainType.Snow, eTerrainType.Lava, eTerrainType.Dirt, eTerrainType.Normal);
-            Texture2D convertToTextureRight = CodeMapToTexture(map, eTerrainType.Mountain, eTerrainType.Heel, eTerrainType.Ground, eTerrainType.Ocean);
+            Texture2D convertToTextureLeft = CodeMapToTexture(map, eTerrainType.Normal, eTerrainType.Dirt, eTerrainType.Lava,  eTerrainType.Snow);
+            Texture2D convertToTextureRight = CodeMapToTexture(map, eTerrainType.Ocean, eTerrainType.Ground, eTerrainType.Heel, eTerrainType.Mountain);
             material.SetTexture("_Map0", convertToTextureLeft);
             material.SetTexture("_Map1", convertToTextureRight);
 

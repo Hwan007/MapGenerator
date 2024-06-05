@@ -19,6 +19,8 @@ Shader "Unlit/TerrainUnlit"
         
         Pass
         {
+            Name "ForwardLit"
+            Tags { "LightMode" = "UniversalForward" }
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
@@ -32,14 +34,20 @@ Shader "Unlit/TerrainUnlit"
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
 
-                float4 uv01 : TEXCOORD0;
-                float4 uv23 : TEXCOORD1;
-                float4 uv45 : TEXCOORD2;
-                float4 uv67 : TEXCOORD3;
+                float2 uv0 : TEXCOORD0;
+                float2 uv1 : TEXCOORD1;
+                float2 uv2 : TEXCOORD2;
+                float2 uv3 : TEXCOORD3;
+                float2 uv4 : TEXCOORD4;
+                float2 uv5 : TEXCOORD5;
+                float2 uv6 : TEXCOORD6;
+                float2 uv7 : TEXCOORD7;
             };
 
             struct v2f
             {
+                float3 normal : NORMAL;
+
                 float4 uv01 : TEXCOORD0;
                 float4 uv23 : TEXCOORD1;
                 float4 uv45 : TEXCOORD2;
@@ -75,7 +83,7 @@ Shader "Unlit/TerrainUnlit"
 
             float mixScale;
             float mixPower;
-            
+
             fixed4 GetCodeAround(sampler2D map, float2 uv, float radius)
             {
                 fixed4 codeAdd = {0,0,0,0};
@@ -116,19 +124,21 @@ Shader "Unlit/TerrainUnlit"
                 v2f o;
 
                 o.vertex = UnityObjectToClipPos(v.vertex);
-                o.uv01 = float4(v.uv01.x * _MainTex0_ST.x + _MainTex0_ST.z, v.uv01.y * _MainTex0_ST.y + _MainTex0_ST.w,
-                                v.uv01.z * _MainTex1_ST.x + _MainTex1_ST.z, v.uv01.w * _MainTex1_ST.y + _MainTex1_ST.w);
+                o.uv01 = float4(v.uv0.x * _MainTex0_ST.x + _MainTex0_ST.z, v.uv0.y * _MainTex0_ST.y + _MainTex0_ST.w,
+                                v.uv1.x * _MainTex1_ST.x + _MainTex1_ST.z, v.uv1.y * _MainTex1_ST.y + _MainTex1_ST.w);
 
-                o.uv23 = float4(v.uv23.x * _MainTex2_ST.x + _MainTex2_ST.z, v.uv23.y * _MainTex2_ST.y + _MainTex2_ST.w,
-                                v.uv23.z * _MainTex3_ST.x + _MainTex3_ST.z, v.uv23.w * _MainTex3_ST.y + _MainTex3_ST.w);
+                o.uv23 = float4(v.uv2.x * _MainTex2_ST.x + _MainTex2_ST.z, v.uv2.y * _MainTex2_ST.y + _MainTex2_ST.w,
+                                v.uv3.x * _MainTex3_ST.x + _MainTex3_ST.z, v.uv3.y * _MainTex3_ST.y + _MainTex3_ST.w);
 
-                o.uv45 = float4(v.uv45.x * _MainTex4_ST.x + _MainTex4_ST.z, v.uv45.y * _MainTex4_ST.y + _MainTex4_ST.w,
-                                v.uv45.z * _MainTex5_ST.x + _MainTex5_ST.z, v.uv45.w * _MainTex5_ST.y + _MainTex5_ST.w);
+                o.uv45 = float4(v.uv4.x * _MainTex4_ST.x + _MainTex4_ST.z, v.uv4.y * _MainTex4_ST.y + _MainTex4_ST.w,
+                                v.uv5.x * _MainTex5_ST.x + _MainTex5_ST.z, v.uv5.y * _MainTex5_ST.y + _MainTex5_ST.w);
 
-                o.uv67 = float4(v.uv67.x * _MainTex6_ST.x + _MainTex6_ST.z, v.uv67.y * _MainTex6_ST.y + _MainTex6_ST.w,
-                                v.uv67.z * _MainTex7_ST.x + _MainTex7_ST.z, v.uv67.w * _MainTex7_ST.y + _MainTex7_ST.w);
+                o.uv67 = float4(v.uv6.x * _MainTex6_ST.x + _MainTex6_ST.z, v.uv6.y * _MainTex6_ST.y + _MainTex6_ST.w,
+                                v.uv7.x * _MainTex7_ST.x + _MainTex7_ST.z, v.uv7.y * _MainTex7_ST.y + _MainTex7_ST.w);
 
                 UNITY_TRANSFER_FOG(o,o.vertex);
+
+                o.normal = v.normal;
                 return o;
             }
 
@@ -139,8 +149,8 @@ Shader "Unlit/TerrainUnlit"
                 float4 map1 = tex2D(_Map1, i.vertex.xz);
 
                 // sample the texture
-                fixed4 col = fixed4(0,0,0,0);
-                col = lerp(col, tex2D(_MainTex0, i.uv01.xy), map0.x);
+                fixed4 col;
+                col = lerp(fixed4(0,0,0,1), tex2D(_MainTex0, i.uv01.xy), map0.x);
                 col = lerp(col, tex2D(_MainTex1, i.uv01.wz), map0.y);
                 col = lerp(col, tex2D(_MainTex2, i.uv23.xy), map0.z);
                 col = lerp(col, tex2D(_MainTex3, i.uv23.wz), map0.w);
@@ -149,6 +159,7 @@ Shader "Unlit/TerrainUnlit"
                 col = lerp(col, tex2D(_MainTex6, i.uv67.xy), map1.z);
                 col = lerp(col, tex2D(_MainTex7, i.uv67.wz), map1.w);
 
+                col = col * (dot(_WorldSpaceLightPos0, i.normal) * 0.9 + 0.1);
                 // apply fog
                 UNITY_APPLY_FOG(i.fogCoord, col);
                 return col;

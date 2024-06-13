@@ -159,7 +159,7 @@ Shader "Unlit/TerrainUnlit"
                 col = lerp(col, tex2D(_MainTex6, i.uv67.xy), map1.z);
                 col = lerp(col, tex2D(_MainTex7, i.uv67.wz), map1.w);
 
-                col = col * (dot(_WorldSpaceLightPos0, i.normal) * 0.9 + 0.1);
+                col = col * (dot(_WorldSpaceLightPos0, i.normal) * 0.7 + 0.3);
                 // apply fog
                 UNITY_APPLY_FOG(i.fogCoord, col);
                 return col;

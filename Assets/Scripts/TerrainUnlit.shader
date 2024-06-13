@@ -22,8 +22,8 @@ Shader "Unlit/TerrainUnlit"
             Name "ForwardLit"
             Tags { "LightMode" = "UniversalForward" }
             CGPROGRAM
-// Upgrade NOTE: excluded shader from DX11; has structs without semantics (struct v2f members world)
-#pragma exclude_renderers d3d11
+            // Upgrade NOTE: excluded shader from DX11; has structs without semantics (struct v2f members world)
+            #pragma exclude_renderers d3d11
             #pragma vertex vert
             #pragma fragment frag
             // make fog work
@@ -49,7 +49,7 @@ Shader "Unlit/TerrainUnlit"
             struct v2f
             {
                 float3 normal : NORMAL;
-                float4 world : SV_POSITION;
+                float4 world : POSITION;
 
                 float4 uv01 : TEXCOORD0;
                 float4 uv23 : TEXCOORD1;
@@ -144,7 +144,7 @@ Shader "Unlit/TerrainUnlit"
                 UNITY_TRANSFER_FOG(o,o.vertex);
 
                 o.normal = v.normal;
-                o.world = v.vertex;
+                o.world = v.vertex * unity_WorldToObject;
                 return o;
             }
 
@@ -163,10 +163,9 @@ Shader "Unlit/TerrainUnlit"
                 col = lerp(col, tex2D(_MainTex4, i.uv45.xy), map1.x);
                 col = lerp(col, tex2D(_MainTex5, i.uv45.wz), map1.y);
                 col = lerp(col, tex2D(_MainTex6, i.uv67.xy), map1.z);
-                //fixed4 shadow = clamp(tex2D(_ShadowMapTexture, i.vertex.xz),0,1);
+                col = lerp(col, tex2D(_MainTex7, i.uv67.xy), map1.ㅈ);
 
                 col = col * (dot(_WorldSpaceLightPos0, i.normal) * 0.6 + 0.4);
-                //col - shadow;
                 // apply fog
                 UNITY_APPLY_FOG(i.fogCoord, col);
                 return col;

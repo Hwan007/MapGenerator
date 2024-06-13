@@ -163,7 +163,7 @@ Shader "Unlit/TerrainUnlit"
                 col = lerp(col, tex2D(_MainTex4, i.uv45.xy), map1.x);
                 col = lerp(col, tex2D(_MainTex5, i.uv45.wz), map1.y);
                 col = lerp(col, tex2D(_MainTex6, i.uv67.xy), map1.z);
-                col = lerp(col, tex2D(_MainTex7, i.uv67.xy), map1.ㅈ);
+                col = lerp(col, tex2D(_MainTex7, i.uv67.xy), map1.??;
 
                 col = col * (dot(_WorldSpaceLightPos0, i.normal) * 0.6 + 0.4);
                 // apply fog
